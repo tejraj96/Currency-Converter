@@ -149,12 +149,34 @@ function updateSelectState() {
 
 }
 
+const swapBtn = document.getElementById('swap-btn');
+swapBtn.addEventListener('click', currencySwap);
+
+function currencySwap() {
+    whoAmI = 'valueLeft';
+    currencyRight = SELECT_CURRENCY_LEFT.value;
+    currencyLeft = SELECT_CURRENCY_RIGHT.value;
+    // valueLeft = INPUT_CURRENCY_RIGHT.value;
+
+    console.log(`currencyRight is ${currencyRight}`);
+    console.log(`currencyLeft is ${currencyLeft}`);
+    console.log(`valueLeft is ${valueLeft}`);
+
+    SELECT_CURRENCY_LEFT.value = currencyLeft;
+    SELECT_CURRENCY_RIGHT.value = currencyRight
+
+    updateSelectState();
+
+    urlParamValidator(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
+
+}
+
 function debounceSelects() {
     clearTimeout(selectTimeoutId);
 
     setTimeout(() => {
         urlParamValidator(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
-    }, 200)
+    }, 500)
 }
 
 //TODO: Faulty function
@@ -241,7 +263,7 @@ function buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight) {
     // debounce calls to API
     setTimeout(() => {
         callAPI(urlBuilder);
-    }, 200);
+    }, 500);
 }
 
 function callAPI(urlBuilder) {
