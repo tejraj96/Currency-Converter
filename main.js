@@ -19,6 +19,8 @@ let currencyRecieved = '';
 let whoAmI = 'valueLeft';
 let selectTimeoutId;
 
+const DEBOUNCE_TIME = 500;
+
 getCurrenciesFromAPI();
 
 SELECT_CURRENCY_LEFT.addEventListener('change', ($event) => {
@@ -50,7 +52,7 @@ INPUT_CURRENCY_LEFT.addEventListener('input', ($event) => {
     console.log(valueLeft);
     whoAmI = 'valueLeft';
     // buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
-    debounceSelects();
+    debounceInputs();
 });
 
 INPUT_CURRENCY_RIGHT.addEventListener('input', ($event) => {
@@ -59,7 +61,7 @@ INPUT_CURRENCY_RIGHT.addEventListener('input', ($event) => {
     valueRight = INPUT_CURRENCY_RIGHT.value;
     whoAmI = 'valueRight';
     // buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
-    debounceSelects();
+    debounceInputs();
 });
 
 function getCurrenciesFromAPI() {
@@ -170,12 +172,12 @@ function currencySwap() {
 
 }
 
-function debounceSelects() {
+function debounceInputs() {
     clearTimeout(selectTimeoutId);
 
-    setTimeout(() => {
+    selectTimeoutId = setTimeout(() => {
         urlParamValidator(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
-    }, 500)
+    }, DEBOUNCE_TIME)
 }
 
 let isInputDirty = false;
@@ -270,9 +272,9 @@ function buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight) {
     clearTimeout(timeoutId);
 
     // debounce calls to API
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
         callAPI(urlBuilder);
-    }, 500);
+    }, DEBOUNCE_TIME);
 }
 
 function callAPI(urlBuilder) {
