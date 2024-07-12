@@ -11,6 +11,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 
 <body class="light">
@@ -18,8 +20,12 @@
         <nav>
             <h1>Currency Converter</h1>
             <ul>
+
                 <li>
                     <div class="toggle-container">
+                        <span class="material-symbols-outlined">
+                            dark_mode
+                        </span>
                         <input type="checkbox" id="themeToggle" class="theme-toggle-checkbox">
                         <label for="themeToggle" class="theme-toggle-label"></label>
                     </div>
@@ -41,7 +47,10 @@
                     <input type="text" name="input_currency_left" id="input_currency_left" value=1>
                 </div>
             </div>
-
+            <!-- <button type="button" >Swap</button> -->
+            <span class="material-symbols-outlined" id="swap-btn">
+                swap_horiz
+            </span>
             <div id="currency_right_main_div">
                 <div id="currency_select_right_div">
                     <select name="select_currency_right" id="select_currency_right">
@@ -54,7 +63,7 @@
             </div>
 
         </form>
-        <button type="button" id="swap-btn">Swap</button>
+
     </div>
     <script type="module" src="./main.js"></script>
 </body>

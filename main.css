@@ -70,7 +70,7 @@ nav ul {
   justify-content: center;
   margin: 40px 0 0 0; */
 
-  max-width: 600px;
+  max-width: 800px;
   margin: 50px auto;
   padding: 20px;
   background: var(--main-container-background-color);
@@ -81,12 +81,12 @@ nav ul {
 form {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 }
 
 #currency_left_main_div,
 #currency_right_main_div {
-  width: 48%;
+  width: 47.5%;
 }
 
 #currency_select_left_div,
@@ -182,4 +182,13 @@ input[type="text"] {
 
 .theme-toggle-checkbox:checked + .theme-toggle-label::after {
   transform: translateX(12px); /* position when checked */
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+  font-size: 28px !important;
+}
+
+form .material-symbols-outlined#swap-btn {
+  cursor: pointer;
 }

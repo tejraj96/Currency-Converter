@@ -156,7 +156,6 @@ function currencySwap() {
     whoAmI = 'valueLeft';
     currencyRight = SELECT_CURRENCY_LEFT.value;
     currencyLeft = SELECT_CURRENCY_RIGHT.value;
-    // valueLeft = INPUT_CURRENCY_RIGHT.value;
 
     console.log(`currencyRight is ${currencyRight}`);
     console.log(`currencyLeft is ${currencyLeft}`);
@@ -179,45 +178,55 @@ function debounceSelects() {
     }, 500)
 }
 
-//TODO: Faulty function
 let isInputDirty = false;
 function urlParamValidator(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight) {
     console.log(`isInputDirty : ${isInputDirty}`);
+    const isValueLeftInvalid = valueLeft === '' || isNaN(valueLeft) || Number(valueLeft) <= 0;
+    const isValueRightInvalid = valueRight === '' || isNaN(valueRight) || Number(valueRight) <= 0;
 
-    if (valueLeft === '' || isNaN(valueLeft) || Number(valueLeft) <= 0) {
+    console.log(`isValueLeftInvalid is ${isValueLeftInvalid}`);
+    console.log(`isValueRightInvalid is ${isValueRightInvalid}`);
+
+    if (isValueLeftInvalid) {
         console.log('Skipping API call for valueLeft');
         isInputDirty = true;
         if (whoAmI === 'valueLeft') {
             INPUT_CURRENCY_RIGHT.value = '';
+            return;
         }
 
 
     }
-    if (valueRight === '' || isNaN(valueRight) || Number(valueRight) <= 0) {
+    if (isValueRightInvalid) {
         console.log('Skipping API call for valueRight');
         isInputDirty = true;
         if (whoAmI === 'valueRight') {
             INPUT_CURRENCY_LEFT.value = '';
-        }
-
-
-    }
-
-    if (isInputDirty) {
-        console.log('isInputDirty is true');
-        console.log((!(valueRight === '' || isNaN(valueRight) || Number(valueRight) <= 0)));
-        if ((valueLeft === '' || isNaN(valueLeft) || Number(valueLeft) <= 0) && (!(valueRight === '' || isNaN(valueRight) || Number(valueRight) <= 0))) {
-            console.log('valueLeft empty; valueRight populated');
-            buildUrl('valueRight', currencyLeft, currencyRight, valueLeft, valueRight);
-        }
-        else if ((valueRight === '' || isNaN(valueRight) || Number(valueRight) <= 0) && (!(valueLeft === '' || isNaN(valueLeft) || Number(valueLeft) <= 0))) {
-            console.log('valueRight empty; valueLeft populated');
-            buildUrl('valueLeft', currencyLeft, currencyRight, valueLeft, valueRight);
-
+            return;
         }
     }
+    if (isValueLeftInvalid && isValueRightInvalid) {
+        console.log('Both values are invalid, skipping API call');
+        return;
+    }
 
-    else {
+    // When left value is invalid and right value is valid
+    if (isValueLeftInvalid && !isValueRightInvalid) {
+        console.log('valueLeft empty; valueRight populated');
+        buildUrl('valueRight', currencyLeft, currencyRight, valueLeft, valueRight);
+        return;
+    }
+
+    // When right value is invalid and left value is valid
+    if (!isValueLeftInvalid && isValueRightInvalid) {
+        console.log('valueRight empty; valueLeft populated');
+        buildUrl('valueLeft', currencyLeft, currencyRight, valueLeft, valueRight);
+        return;
+    }
+
+    // When both values are valid
+    if (!isValueLeftInvalid && !isValueRightInvalid) {
+        console.log('Both values are valid');
         buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
     }
 
