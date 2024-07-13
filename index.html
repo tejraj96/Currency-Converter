@@ -35,36 +35,54 @@
         </nav>
     </div>
 
-    <div id="main_container">
-        <form>
-            <div id="currency_left_main_div">
-                <div id="currency_select_left_div">
-                    <select name="select_currency_left" id="select_currency_left">
-                    </select>
+    <div class="container">
+        <div id="main_container">
+            <form>
+                <div id="currency_left_main_div">
+                    <div id="currency_select_left_div">
+                        <select name="select_currency_left" id="select_currency_left">
+                        </select>
+                    </div>
+
+                    <div class="mt-1" id="input_currency_left_div">
+                        <input type="text" name="input_currency_left" id="input_currency_left" value=1>
+                    </div>
+                </div>
+                <!-- <button type="button" >Swap</button> -->
+                <span class="material-symbols-outlined" id="swap-btn">
+                    swap_horiz
+                </span>
+                <div id="currency_right_main_div">
+                    <div id="currency_select_right_div">
+                        <select name="select_currency_right" id="select_currency_right">
+                        </select>
+                    </div>
+
+                    <div class="mt-1" id="input_currency_right_div">
+                        <input type="text" name="input_currency_right" id="input_currency_right">
+                    </div>
                 </div>
 
-                <div class="mt-1" id="input_currency_left_div">
-                    <input type="text" name="input_currency_left" id="input_currency_left" value=1>
+            </form>
+        </div>
+
+        <div id="side_container">
+            <div id="side_container_1">
+                <div class="chart-container" style="position: relative; height:160px; width:100%;">
+                    <canvas id="myChart"></canvas>
                 </div>
             </div>
-            <!-- <button type="button" >Swap</button> -->
-            <span class="material-symbols-outlined" id="swap-btn">
-                swap_horiz
-            </span>
-            <div id="currency_right_main_div">
-                <div id="currency_select_right_div">
-                    <select name="select_currency_right" id="select_currency_right">
-                    </select>
-                </div>
 
-                <div class="mt-1" id="input_currency_right_div">
-                    <input type="text" name="input_currency_right" id="input_currency_right">
-                </div>
+            <div id="side_container_2">
+
             </div>
-
-        </form>
-
+        </div>
     </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="./main.js"></script>
 </body>
 

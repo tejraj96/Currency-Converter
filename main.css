@@ -71,7 +71,27 @@ nav ul {
   margin: 40px 0 0 0; */
 
   max-width: 800px;
-  margin: 50px auto;
+  margin: 50px auto 30px auto;
+  padding: 20px;
+  background: var(--main-container-background-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+#side_container {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  width: 800px;
+  margin: 0 auto;
+}
+
+#side_container_1,
+#side_container_2 {
+  width: 390px;
+  max-width: 390px;
+  max-height: 200px;
+  /* margin: 50px auto; */
   padding: 20px;
   background: var(--main-container-background-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -192,3 +212,34 @@ input[type="text"] {
 form .material-symbols-outlined#swap-btn {
   cursor: pointer;
 }
+
+#myChart {
+  background-color: var(--main-container-background-color);
+  color: var(--color);
+}
+
+table {
+  width: 100%;
+}
+
+table,
+th,
+td {
+  border-bottom: 1px solid var(--color);
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 5px;
+  width: 50%;
+}
+
+/* tr:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+} */
+
+/* th:nth-child(even),
+td:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+} */

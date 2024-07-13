@@ -3,7 +3,8 @@
 import { loadThemeFromLocalStorage, toggleTheme } from "./darkMode.js";
 
 const host = 'api.frankfurter.app';
-const url = `https://${host}/latest`;
+// const url = `https://${host}/latest`;
+const url = `https://${host}/`;
 
 const SELECT_CURRENCY_LEFT = document.getElementById('select_currency_left');
 const SELECT_CURRENCY_RIGHT = document.getElementById('select_currency_right');
@@ -30,9 +31,7 @@ SELECT_CURRENCY_LEFT.addEventListener('change', ($event) => {
     whoAmI = 'currencyLeft';
     valueLeft = INPUT_CURRENCY_LEFT.value;
     updateSelectState();
-    // buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
     urlParamValidator(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
-
 });
 
 SELECT_CURRENCY_RIGHT.addEventListener('change', ($event) => {
@@ -41,7 +40,6 @@ SELECT_CURRENCY_RIGHT.addEventListener('change', ($event) => {
     whoAmI = 'currencyRight';
     valueRight = INPUT_CURRENCY_RIGHT.value;
     updateSelectState();
-    // buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
     urlParamValidator(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
 });
 
@@ -51,7 +49,6 @@ INPUT_CURRENCY_LEFT.addEventListener('input', ($event) => {
     valueLeft = INPUT_CURRENCY_LEFT.value;
     console.log(valueLeft);
     whoAmI = 'valueLeft';
-    // buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
     debounceInputs();
 });
 
@@ -60,7 +57,6 @@ INPUT_CURRENCY_RIGHT.addEventListener('input', ($event) => {
     // console.log(INPUT_CURRENCY_RIGHT.value);
     valueRight = INPUT_CURRENCY_RIGHT.value;
     whoAmI = 'valueRight';
-    // buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight);
     debounceInputs();
 });
 
@@ -266,13 +262,15 @@ function buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight) {
         return;
     }
 
-    urlBuilder = `${url}?amount=${amount}&from=${from}&to=${to}`;
+    urlBuilder = `${url}latest?amount=${amount}&from=${from}&to=${to}`;
+
     console.log(urlBuilder);
 
     clearTimeout(timeoutId);
 
     // debounce calls to API
     timeoutId = setTimeout(() => {
+        getLast5DaysCurrencyRates(from, to);
         callAPI(urlBuilder);
     }, DEBOUNCE_TIME);
 }
@@ -300,6 +298,131 @@ function render(currentRate, currencyRecieved) {
         INPUT_CURRENCY_RIGHT.value = currentRate;
     }
     else console.error(`Something went wrong!`);
+}
+
+async function getLast5DaysCurrencyRates(from, to) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based, so add 1
+    const dd = String(today.getDate() - 5).padStart(2, "0");
+
+    const formattedDate = `${yyyy}-${mm}-${dd}`;
+    console.log(formattedDate);
+    console.log(`${url}${formattedDate}..?&from=${from}&to=${to}`); // Outputs: yyyy-mm-dd
+    const queryDate = `${url}${formattedDate}..?&from=${from}&to=${to}`;
+
+    try {
+        const data = await fetch(queryDate);
+        const dateObj = await data.json();
+        chartStager(dateObj);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function chartStager(datesObj) {
+    console.log(datesObj);
+    const ratesObj = datesObj.rates;
+    let newObj = {};
+
+    for (let dateKey in ratesObj) {
+        console.log(dateKey);
+        console.log(ratesObj[dateKey]);
+
+        const currencyObj = ratesObj[dateKey];
+
+        for (let currency in currencyObj) {
+            console.log(currencyObj[currency]);
+            newObj[dateKey] = currencyObj[currency];
+        }
+    }
+
+    console.log(newObj);
+    charter(newObj);
+    chartTablePopulator(newObj);
+}
+
+function charter(newObj) {
+    const ctx = document.getElementById('myChart');
+
+    const dateLabelArray = [];
+    const rateDataArray = [];
+
+    for (const [date, rate] of Object.entries(newObj)) {
+        dateLabelArray.push(date);
+        rateDataArray.push(rate);
+    }
+
+    let chartStatus = Chart.getChart("myChart"); // <canvas> id
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    }
+
+    console.log(dateLabelArray);
+    console.log(rateDataArray);
+
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dateLabelArray,
+            datasets: [{
+                label: '# of Votes',
+                data: rateDataArray,
+                backgroundColor: '#212121',
+                color: '#000048',
+                borderColor: '#212121',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false // Hide the legend
+                },
+                title: {
+                    display: false // Hide the title
+                },
+
+            },
+            scales: {
+
+                x: {
+                    display: false
+                },
+                y: {
+                    beginAtZero: false
+
+                }
+            }
+        }
+    });
+
+
+}
+
+function chartTablePopulator(newObj) {
+    document.getElementById('side_container_2').innerHTML = '';
+    const tableFragment = document.createDocumentFragment();
+    let table = document.createElement('table');
+
+    for (const [date, rate] of Object.entries(newObj)) {
+        console.log(date);
+        console.log(rate);
+        const tr = document.createElement('tr');
+        const tdDate = document.createElement('td');
+        const tdRate = document.createElement('td');
+        tdDate.textContent = date;
+        tdRate.textContent = rate;
+        tr.appendChild(tdDate);
+        tr.appendChild(tdRate);
+        tableFragment.appendChild(tr);
+    }
+
+    table.appendChild(tableFragment);
+
+    document.getElementById('side_container_2').appendChild(table);
+
 }
 
 //Enable dark mode
