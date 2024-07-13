@@ -197,7 +197,7 @@ input[type="text"] {
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label {
-  background-color: #feb272; /* color when checked */
+  background-color: rgb(254, 178, 114); /* color when checked */
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label::after {

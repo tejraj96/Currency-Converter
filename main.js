@@ -343,7 +343,7 @@ function chartStager(datesObj) {
 }
 
 function charter(newObj) {
-    const ctx = document.getElementById('myChart');
+    const ctx = document.getElementById('myChart').getContext('2d');
 
     const dateLabelArray = [];
     const rateDataArray = [];
@@ -367,12 +367,14 @@ function charter(newObj) {
         data: {
             labels: dateLabelArray,
             datasets: [{
-                label: '# of Votes',
+                label: '',
                 data: rateDataArray,
-                backgroundColor: '#212121',
-                color: '#000048',
-                borderColor: '#212121',
-                borderWidth: 2,
+                backgroundColor: 'rgba(70, 130, 180, 0.3)',
+                color: 'red',
+                borderColor: 'rgba(70, 130, 180, 0.9)',
+                borderWidth: 1,
+                pointBackgroundColor: 'rgba(70, 130, 180, 0.6)',
+                fill: true
             }]
         },
         options: {
@@ -388,9 +390,24 @@ function charter(newObj) {
             scales: {
 
                 x: {
+                    ticks: {
+                        color: 'rgba(70, 130, 180, 1)'
+                    },
+                    grid: {
+                        color: 'rgba(70, 130, 180, 1)'
+                    },
                     display: false
                 },
                 y: {
+                    ticks: {
+                        color: 'rgba(70, 130, 180, 1)',
+                        font: {
+                            size: 16 // Font size for x-axis labels
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(70, 130, 180, 1)'
+                    },
                     beginAtZero: false
 
                 }
