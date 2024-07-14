@@ -213,10 +213,10 @@ form .material-symbols-outlined#swap-btn {
   cursor: pointer;
 }
 
-#myChart {
+/* #myChart {
   background-color: var(--main-container-background-color);
   color: var(--color);
-}
+} */
 
 table {
   width: 100%;
@@ -233,6 +233,10 @@ th,
 td {
   padding: 5px;
   width: 50%;
+}
+
+th {
+  text-align: start;
 }
 
 /* tr:nth-child(even) {

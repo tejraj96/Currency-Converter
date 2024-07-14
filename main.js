@@ -46,19 +46,50 @@ SELECT_CURRENCY_RIGHT.addEventListener('change', ($event) => {
 INPUT_CURRENCY_LEFT.addEventListener('input', ($event) => {
     // console.log($event.target.value);
     // console.log(INPUT_CURRENCY_LEFT.value);
-    valueLeft = INPUT_CURRENCY_LEFT.value;
-    console.log(valueLeft);
-    whoAmI = 'valueLeft';
-    debounceInputs();
+    if (inputValidator(INPUT_CURRENCY_LEFT.value)) {
+        console.log(`Input left valid`);
+        valueLeft = INPUT_CURRENCY_LEFT.value;
+        console.log(valueLeft);
+        whoAmI = 'valueLeft';
+        debounceInputs();
+    } else {
+        INPUT_CURRENCY_LEFT.value = '';
+        INPUT_CURRENCY_RIGHT.value = '';
+        valueLeft = INPUT_CURRENCY_LEFT.value;
+        valueRight = INPUT_CURRENCY_RIGHT.value;
+        return;
+    };
+
 });
 
 INPUT_CURRENCY_RIGHT.addEventListener('input', ($event) => {
     // console.log($event.target.id);
     // console.log(INPUT_CURRENCY_RIGHT.value);
-    valueRight = INPUT_CURRENCY_RIGHT.value;
-    whoAmI = 'valueRight';
-    debounceInputs();
+    if (inputValidator(INPUT_CURRENCY_RIGHT.value)) {
+        console.log(`Input right valid`);
+        valueRight = INPUT_CURRENCY_RIGHT.value;
+        whoAmI = 'valueRight';
+        debounceInputs();
+    } else {
+        INPUT_CURRENCY_LEFT.value = '';
+        INPUT_CURRENCY_RIGHT.value = '';
+        valueLeft = INPUT_CURRENCY_LEFT.value;
+        valueRight = INPUT_CURRENCY_RIGHT.value;
+        return;
+    };
 });
+
+function inputValidator(input) {
+
+    if (input <= 0 || isNaN(input) || input === undefined) {
+
+        return false;
+    }
+    else {
+
+        return true;
+    };
+}
 
 function getCurrenciesFromAPI() {
     const urlCurrencies = `https://${host}/currencies`;
@@ -358,11 +389,20 @@ function charter(newObj) {
         chartStatus.destroy();
     }
 
+
+
     console.log(dateLabelArray);
     console.log(rateDataArray);
 
+    const isDarkTheme = document.body.classList.contains('dark');
+    const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)';
+    const tickColor = isDarkTheme ? 'rgba(255, 255, 255, 1)' : 'rgba(70, 70, 70, 1)';
+    const pointBackgroundColor = isDarkTheme ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)';
+    const borderColor = isDarkTheme ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
+    const backgroundColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
-    new Chart(ctx, {
+
+    /*new Chart(ctx, {
         type: 'line',
         data: {
             labels: dateLabelArray,
@@ -413,6 +453,55 @@ function charter(newObj) {
                 }
             }
         }
+    });*/
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dateLabelArray,
+            datasets: [{
+                label: '',
+                data: rateDataArray,
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                borderWidth: 1,
+                pointBackgroundColor: pointBackgroundColor,
+                fill: true
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false // Hide the legend
+                },
+                title: {
+                    display: false // Hide the title
+                },
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: tickColor
+                    },
+                    grid: {
+                        color: gridColor
+                    },
+                    display: false
+                },
+                y: {
+                    ticks: {
+                        color: tickColor,
+                        font: {
+                            size: 14 // Font size for x-axis labels
+                        }
+                    },
+                    grid: {
+                        color: gridColor
+                    },
+                    beginAtZero: false
+                }
+            }
+        }
     });
 
 
@@ -422,6 +511,10 @@ function chartTablePopulator(newObj) {
     document.getElementById('side_container_2').innerHTML = '';
     const tableFragment = document.createDocumentFragment();
     let table = document.createElement('table');
+    let th = document.createElement('th');
+    th.textContent = 'Date';
+    let th2 = document.createElement('th');
+    th2.textContent = 'Amount';
 
     for (const [date, rate] of Object.entries(newObj)) {
         console.log(date);
@@ -436,6 +529,8 @@ function chartTablePopulator(newObj) {
         tableFragment.appendChild(tr);
     }
 
+    table.appendChild(th);
+    table.appendChild(th2);
     table.appendChild(tableFragment);
 
     document.getElementById('side_container_2').appendChild(table);
@@ -453,5 +548,6 @@ const themeToggleButton = document.getElementById('themeToggle');
 if (themeToggleButton) {
     themeToggleButton.addEventListener('click', () => {
         toggleTheme();
+        location.replace(location.href);
     });
 }
