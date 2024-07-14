@@ -20,7 +20,7 @@ let currencyRecieved = '';
 let whoAmI = 'valueLeft';
 let selectTimeoutId;
 
-const DEBOUNCE_TIME = 500;
+const DEBOUNCE_TIME = 300;
 
 getCurrenciesFromAPI();
 
@@ -403,60 +403,6 @@ function charter(newObj) {
     const borderColor = isDarkTheme ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
     const backgroundColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
-
-    /*new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dateLabelArray,
-            datasets: [{
-                label: '',
-                data: rateDataArray,
-                backgroundColor: 'rgba(70, 130, 180, 0.3)',
-                color: 'red',
-                borderColor: 'rgba(70, 130, 180, 0.9)',
-                borderWidth: 1,
-                pointBackgroundColor: 'rgba(70, 130, 180, 0.6)',
-                fill: true
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    display: false // Hide the legend
-                },
-                title: {
-                    display: false // Hide the title
-                },
-
-            },
-            scales: {
-
-                x: {
-                    ticks: {
-                        color: 'rgba(70, 130, 180, 1)'
-                    },
-                    grid: {
-                        color: 'rgba(70, 130, 180, 1)'
-                    },
-                    display: false
-                },
-                y: {
-                    ticks: {
-                        color: 'rgba(70, 130, 180, 1)',
-                        font: {
-                            size: 16 // Font size for x-axis labels
-                        }
-                    },
-                    grid: {
-                        color: 'rgba(70, 130, 180, 1)'
-                    },
-                    beginAtZero: false
-
-                }
-            }
-        }
-    });*/
-
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -546,36 +492,32 @@ async function popularConversions(from, to) {
     let popConversionsObjRight = {};
     let popConversionsObjLeft = {};
 
-    for (const amountRight of popConvArr) {
-        const data = await fetch(`${url}latest?amount=${amountRight}&from=${from}&to=${to}`);
-        const dataObj = await data.json();
+    let fetchRightConversions = [];
+    let fetchLeftConversions = [];
 
+    for (const amount of popConvArr) {
+        fetchRightConversions.push(fetch(`${url}latest?amount=${amount}&from=${from}&to=${to}`));
+        fetchLeftConversions.push(fetch(`${url}latest?amount=${amount}&from=${to}&to=${from}`));
+    }
+
+    const rightResponses = await Promise.all(fetchRightConversions);
+    const leftResponses = await Promise.all(fetchLeftConversions);
+
+    for (const response of rightResponses) {
+        const dataObj = await response.json();
         popConversionsObjRight[dataObj.amount] = dataObj.rates[to];
-        if (Object.keys(popConversionsObjRight).length === 9) {
-            console.log('ObjRight l=3');
-            popularTablePopulator(popConversionsObjRight, 'Right');
-        }
-        console.log(dataObj.rates);
     }
 
     console.log('Right:', popConversionsObjRight);
+    popularTablePopulator(popConversionsObjRight, 'Right')
 
-    for (const amountLeft of popConvArr) {
-        const data = await fetch(`${url}latest?amount=${amountLeft}&from=${to}&to=${from}`);
-        const dataObj = await data.json();
-
+    for (const response of leftResponses) {
+        const dataObj = await response.json();
         popConversionsObjLeft[dataObj.amount] = dataObj.rates[from];
-        if (Object.keys(popConversionsObjLeft).length === 9) {
-            console.log('ObjLeft l=3');
-            popularTablePopulator(popConversionsObjLeft, 'Left');
-        }
-        console.log(dataObj.rates);
     }
 
     console.log('Left:', popConversionsObjLeft);
-
-
-
+    popularTablePopulator(popConversionsObjLeft, 'Left');
 }
 
 function popularTablePopulator(popularConversionsObj, caller) {
