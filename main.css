@@ -51,6 +51,12 @@ body {
   padding: 0.5rem 1rem;
 }
 
+footer.container-fluid {
+  position: relative;
+  width: 100%;
+  bottom: 0px;
+}
+
 nav {
   width: 100%;
   display: flex;
@@ -78,12 +84,12 @@ nav ul {
   border-radius: 8px;
 }
 
-#side_container {
+.side_container {
   display: flex;
   align-content: center;
   justify-content: space-between;
   width: 800px;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
 #side_container_1,
@@ -91,7 +97,16 @@ nav ul {
   width: 390px;
   max-width: 390px;
   max-height: 200px;
-  /* margin: 50px auto; */
+  padding: 20px;
+  background: var(--main-container-background-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+#pop_tables_left,
+#pop_tables_right {
+  width: 390px;
+  max-width: 390px;
   padding: 20px;
   background: var(--main-container-background-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

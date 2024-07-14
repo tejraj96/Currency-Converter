@@ -301,8 +301,9 @@ function buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight) {
 
     // debounce calls to API
     timeoutId = setTimeout(() => {
-        getLast5DaysCurrencyRates(from, to);
         callAPI(urlBuilder);
+        getLast5DaysCurrencyRates(from, to);
+        popularConversions(from, to);
     }, DEBOUNCE_TIME);
 }
 
@@ -340,6 +341,7 @@ async function getLast5DaysCurrencyRates(from, to) {
     const formattedDate = `${yyyy}-${mm}-${dd}`;
     console.log(formattedDate);
     console.log(`${url}${formattedDate}..?&from=${from}&to=${to}`); // Outputs: yyyy-mm-dd
+
     const queryDate = `${url}${formattedDate}..?&from=${from}&to=${to}`;
 
     try {
@@ -534,6 +536,107 @@ function chartTablePopulator(newObj) {
     table.appendChild(tableFragment);
 
     document.getElementById('side_container_2').appendChild(table);
+
+}
+
+async function popularConversions(from, to) {
+    const popConvArr = [5, 10, 25, 50, 100, 500, 1000, 5000, 10000];
+    console.log(popConvArr.length);
+
+    let popConversionsObjRight = {};
+    let popConversionsObjLeft = {};
+
+    for (const amountRight of popConvArr) {
+        const data = await fetch(`${url}latest?amount=${amountRight}&from=${from}&to=${to}`);
+        const dataObj = await data.json();
+
+        popConversionsObjRight[dataObj.amount] = dataObj.rates[to];
+        if (Object.keys(popConversionsObjRight).length === 9) {
+            console.log('ObjRight l=3');
+            popularTablePopulator(popConversionsObjRight, 'Right');
+        }
+        console.log(dataObj.rates);
+    }
+
+    console.log('Right:', popConversionsObjRight);
+
+    for (const amountLeft of popConvArr) {
+        const data = await fetch(`${url}latest?amount=${amountLeft}&from=${to}&to=${from}`);
+        const dataObj = await data.json();
+
+        popConversionsObjLeft[dataObj.amount] = dataObj.rates[from];
+        if (Object.keys(popConversionsObjLeft).length === 9) {
+            console.log('ObjLeft l=3');
+            popularTablePopulator(popConversionsObjLeft, 'Left');
+        }
+        console.log(dataObj.rates);
+    }
+
+    console.log('Left:', popConversionsObjLeft);
+
+
+
+}
+
+function popularTablePopulator(popularConversionsObj, caller) {
+    if (caller === 'Left') {
+        document.getElementById('pop_tables_left').innerHTML = '';
+        const tableFragment = document.createDocumentFragment();
+        let table = document.createElement('table');
+        let th = document.createElement('th');
+        th.textContent = `${currencyRight}`;
+        let th2 = document.createElement('th');
+        th2.textContent = `${currencyLeft}`;
+
+        for (const [staticAmount, gottenAmount] of Object.entries(popularConversionsObj)) {
+            console.log(staticAmount);
+            console.log(gottenAmount);
+            const tr = document.createElement('tr');
+            const tdStaticAmount = document.createElement('td');
+            const tdGottenAmount = document.createElement('td');
+            tdStaticAmount.textContent = staticAmount;
+            tdGottenAmount.textContent = gottenAmount;
+            tr.appendChild(tdStaticAmount);
+            tr.appendChild(tdGottenAmount);
+            tableFragment.appendChild(tr);
+        }
+
+        table.appendChild(th);
+        table.appendChild(th2);
+        table.appendChild(tableFragment);
+
+        document.getElementById('pop_tables_left').appendChild(table);
+    }
+
+    if (caller === 'Right') {
+        document.getElementById('pop_tables_right').innerHTML = '';
+        const tableFragment = document.createDocumentFragment();
+        let table = document.createElement('table');
+        let th = document.createElement('th');
+        th.textContent = `${currencyLeft}`;
+        let th2 = document.createElement('th');
+        th2.textContent = `${currencyRight}`;
+
+        for (const [staticAmount, gottenAmount] of Object.entries(popularConversionsObj)) {
+            console.log(staticAmount);
+            console.log(gottenAmount);
+            const tr = document.createElement('tr');
+            const tdStaticAmount = document.createElement('td');
+            const tdGottenAmount = document.createElement('td');
+            tdStaticAmount.textContent = staticAmount;
+            tdGottenAmount.textContent = gottenAmount;
+            tr.appendChild(tdStaticAmount);
+            tr.appendChild(tdGottenAmount);
+            tableFragment.appendChild(tr);
+        }
+
+        table.appendChild(th);
+        table.appendChild(th2);
+        table.appendChild(tableFragment);
+
+        document.getElementById('pop_tables_right').appendChild(table);
+    }
+
 
 }
 
