@@ -14,6 +14,7 @@
     no-repeat right 10px center;
 
   --nav-bg-color: #fff;
+  --hover-color: rgba(0, 0, 0, 0.1);
 }
 
 .light {
@@ -24,6 +25,7 @@
   --svg-background: url('data:image/svg+xml;utf8,<svg fill="%23212121" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
     no-repeat right 10px center;
   --nav-bg-color: #fff;
+  --hover-color: rgba(0, 0, 0, 0.1);
 }
 
 .dark {
@@ -34,6 +36,7 @@
   --svg-background: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
     no-repeat right 10px center;
   --nav-bg-color: #2c2c2c;
+  --hover-color: rgb(50, 50, 50, 0.6);
 }
 
 /* Main Styles */
@@ -82,6 +85,18 @@ nav ul {
   background: var(--main-container-background-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+}
+
+#main_container:hover,
+#side_container_1:hover,
+#side_container_2:hover,
+#pop_tables_left:hover,
+#pop_tables_right:hover {
+  /* box-shadow: 0 8px 16px rgba(175, 7, 7, 0.644); */
+  transition: ease;
+  transition-duration: 300ms;
+  /* box-shadow: 0px 1px 20px 2px var(--hover-color); */
+  box-shadow: 0 8px 16px var(--hover-color);
 }
 
 .side_container {
@@ -241,6 +256,7 @@ table,
 th,
 td {
   border-bottom: 1px solid var(--color);
+
   border-collapse: collapse;
 }
 
@@ -248,10 +264,15 @@ th,
 td {
   padding: 5px;
   width: 50%;
+  text-align: center;
 }
 
 th {
-  text-align: start;
+  text-align: center;
+}
+
+.tabel-label {
+  text-align: center;
 }
 
 /* tr:nth-child(even) {

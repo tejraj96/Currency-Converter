@@ -20,7 +20,7 @@ let currencyRecieved = '';
 let whoAmI = 'valueLeft';
 let selectTimeoutId;
 
-const DEBOUNCE_TIME = 300;
+const DEBOUNCE_TIME = 400;
 
 getCurrenciesFromAPI();
 
@@ -334,9 +334,10 @@ function render(currentRate, currencyRecieved) {
 
 async function getLast5DaysCurrencyRates(from, to) {
     const today = new Date();
+    today.setDate(today.getDate() - 5);
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based, so add 1
-    const dd = String(today.getDate() - 5).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
 
     const formattedDate = `${yyyy}-${mm}-${dd}`;
     console.log(formattedDate);
@@ -428,6 +429,7 @@ function charter(newObj) {
             },
             scales: {
                 x: {
+
                     ticks: {
                         color: tickColor
                     },
@@ -437,6 +439,7 @@ function charter(newObj) {
                     display: false
                 },
                 y: {
+
                     ticks: {
                         color: tickColor,
                         font: {
@@ -448,7 +451,12 @@ function charter(newObj) {
                     },
                     beginAtZero: false
                 }
-            }
+            },
+
+            animation: {
+                duration: 1000, // Duration of the animation
+                easing: 'easeOutElastic', // Linear easing for smooth transition
+            },
         }
     });
 
@@ -462,7 +470,7 @@ function chartTablePopulator(newObj) {
     let th = document.createElement('th');
     th.textContent = 'Date';
     let th2 = document.createElement('th');
-    th2.textContent = 'Amount';
+    th2.textContent = `1 ${currencyLeft} to ${currencyRight}`;
 
     for (const [date, rate] of Object.entries(newObj)) {
         console.log(date);
@@ -524,6 +532,9 @@ function popularTablePopulator(popularConversionsObj, caller) {
     if (caller === 'Left') {
         document.getElementById('pop_tables_left').innerHTML = '';
         const tableFragment = document.createDocumentFragment();
+        let label = document.createElement('div');
+        label.className = 'table-label';
+        label.textContent = `Popular ${currencyRight} to ${currencyLeft} conversions`;
         let table = document.createElement('table');
         let th = document.createElement('th');
         th.textContent = `${currencyRight}`;
@@ -548,11 +559,15 @@ function popularTablePopulator(popularConversionsObj, caller) {
         table.appendChild(tableFragment);
 
         document.getElementById('pop_tables_left').appendChild(table);
+        document.getElementById('pop_tables_left').insertAdjacentElement("afterbegin", label);
     }
 
     if (caller === 'Right') {
         document.getElementById('pop_tables_right').innerHTML = '';
         const tableFragment = document.createDocumentFragment();
+        let label = document.createElement('div');
+        label.className = 'table-label';
+        label.textContent = `Popular ${currencyLeft} to ${currencyRight} conversions`;
         let table = document.createElement('table');
         let th = document.createElement('th');
         th.textContent = `${currencyLeft}`;
@@ -577,8 +592,16 @@ function popularTablePopulator(popularConversionsObj, caller) {
         table.appendChild(tableFragment);
 
         document.getElementById('pop_tables_right').appendChild(table);
+        document.getElementById('pop_tables_right').insertAdjacentElement("afterbegin", label);
     }
 
+    const tableLabel = [...document.getElementsByClassName('table-label')];
+    tableLabel.forEach(element => {
+        element.style.textAlign = 'center';
+        element.style.fontSize = '1.125rem';
+        element.style.fontWeight = 'bold';
+        element.style.marginBottom = '10px';
+    });
 
 }
 
