@@ -262,6 +262,8 @@ function urlParamValidator(whoAmI, currencyLeft, currencyRight, valueLeft, value
 }
 
 let timeoutId;
+let lastFrom;
+let lastTo;
 
 function buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight) {
     let urlBuilder;
@@ -301,9 +303,20 @@ function buildUrl(whoAmI, currencyLeft, currencyRight, valueLeft, valueRight) {
 
     // debounce calls to API
     timeoutId = setTimeout(() => {
-        callAPI(urlBuilder);
-        getLast5DaysCurrencyRates(from, to);
-        popularConversions(from, to);
+        console.log(lastFrom, lastTo);
+        if (lastFrom === from && lastTo === to) {
+            console.log('Only callAPI()');
+            callAPI(urlBuilder);
+        }
+        else {
+            console.log('All APIs called');
+            lastFrom = from;
+            lastTo = to;
+            callAPI(urlBuilder);
+            getLast5DaysCurrencyRates(from, to);
+            popularConversions(from, to);
+        }
+
     }, DEBOUNCE_TIME);
 }
 
@@ -340,7 +353,7 @@ async function getLast5DaysCurrencyRates(from, to) {
     const dd = String(today.getDate()).padStart(2, "0");
 
     const formattedDate = `${yyyy}-${mm}-${dd}`;
-    console.log(formattedDate);
+    // console.log(formattedDate);
     console.log(`${url}${formattedDate}..?&from=${from}&to=${to}`); // Outputs: yyyy-mm-dd
 
     const queryDate = `${url}${formattedDate}..?&from=${from}&to=${to}`;
@@ -355,23 +368,23 @@ async function getLast5DaysCurrencyRates(from, to) {
 }
 
 function chartStager(datesObj) {
-    console.log(datesObj);
+    // console.log(datesObj);
     const ratesObj = datesObj.rates;
     let newObj = {};
 
     for (let dateKey in ratesObj) {
-        console.log(dateKey);
-        console.log(ratesObj[dateKey]);
+        // console.log(dateKey);
+        // console.log(ratesObj[dateKey]);
 
         const currencyObj = ratesObj[dateKey];
 
         for (let currency in currencyObj) {
-            console.log(currencyObj[currency]);
+            // console.log(currencyObj[currency]);
             newObj[dateKey] = currencyObj[currency];
         }
     }
 
-    console.log(newObj);
+    // console.log(newObj);
     charter(newObj);
     chartTablePopulator(newObj);
 }
@@ -394,8 +407,8 @@ function charter(newObj) {
 
 
 
-    console.log(dateLabelArray);
-    console.log(rateDataArray);
+    // console.log(dateLabelArray);
+    // console.log(rateDataArray);
 
     const isDarkTheme = document.body.classList.contains('dark');
     const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)';
@@ -473,8 +486,8 @@ function chartTablePopulator(newObj) {
     th2.textContent = `1 ${currencyLeft} to ${currencyRight}`;
 
     for (const [date, rate] of Object.entries(newObj)) {
-        console.log(date);
-        console.log(rate);
+        // console.log(date);
+        // console.log(rate);
         const tr = document.createElement('tr');
         const tdDate = document.createElement('td');
         const tdRate = document.createElement('td');
@@ -516,7 +529,7 @@ async function popularConversions(from, to) {
         popConversionsObjRight[dataObj.amount] = dataObj.rates[to];
     }
 
-    console.log('Right:', popConversionsObjRight);
+    // console.log('Right:', popConversionsObjRight);
     popularTablePopulator(popConversionsObjRight, 'Right')
 
     for (const response of leftResponses) {
@@ -524,7 +537,7 @@ async function popularConversions(from, to) {
         popConversionsObjLeft[dataObj.amount] = dataObj.rates[from];
     }
 
-    console.log('Left:', popConversionsObjLeft);
+    // console.log('Left:', popConversionsObjLeft);
     popularTablePopulator(popConversionsObjLeft, 'Left');
 }
 
@@ -542,8 +555,8 @@ function popularTablePopulator(popularConversionsObj, caller) {
         th2.textContent = `${currencyLeft}`;
 
         for (const [staticAmount, gottenAmount] of Object.entries(popularConversionsObj)) {
-            console.log(staticAmount);
-            console.log(gottenAmount);
+            // console.log(staticAmount);
+            // console.log(gottenAmount);
             const tr = document.createElement('tr');
             const tdStaticAmount = document.createElement('td');
             const tdGottenAmount = document.createElement('td');
@@ -575,8 +588,8 @@ function popularTablePopulator(popularConversionsObj, caller) {
         th2.textContent = `${currencyRight}`;
 
         for (const [staticAmount, gottenAmount] of Object.entries(popularConversionsObj)) {
-            console.log(staticAmount);
-            console.log(gottenAmount);
+            // console.log(staticAmount);
+            // console.log(gottenAmount);
             const tr = document.createElement('tr');
             const tdStaticAmount = document.createElement('td');
             const tdGottenAmount = document.createElement('td');
